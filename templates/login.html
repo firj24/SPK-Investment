@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Investment Support{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Login</h1>
+<form method="POST">
+    <div class="mb-3">
+        <label for="email_or_username" class="form-label">Email atau Username</label>
+        <input type="text" name="email_or_username" id="email_or_username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button>
+    <p class="mt-3">Belum punya akun? <a href="{{ url_for('register') }}">Registrasi</a></p>
+{% endblock %}

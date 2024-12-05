@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Profil - Investment Support{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Profil</li>
+    </ol>
+</nav>
+
+<h1>Profil Saya</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" name="username" value="{{ user[0] }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ user[1] }}" required>
+    </div>
+    <hr>
+    <h4>Ubah Password (Opsional)</h4>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password Baru</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password baru (kosongkan jika tidak diubah)">
+    </div>
+    <div class="mb-3">
+        <label for="confirm_password" class="form-label">Konfirmasi Password</label>
+        <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Konfirmasi password baru">
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+</form>
+{% endblock %}

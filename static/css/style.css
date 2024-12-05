@@ -1,91 +1,99 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 30px;
-    background: #fff;
-    margin-top: 50px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-h1 {
-    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f9;
     color: #333;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
 }
 
-label {
-    margin-bottom: 10px;
-    font-size: 1.2em;
+.alert {
+    border-radius: 8px;
 }
 
-input[type="file"] {
-    margin-bottom: 20px;
-}
-
-button {
-    padding: 10px 20px;
-    background: #28a745;
-    border: none;
+table th {
+    background-color: #0d6efd;
     color: #fff;
-    cursor: pointer;
-    font-size: 1em;
-    border-radius: 5px;
 }
 
-button:hover {
-    background: #218838;
+table tbody tr:hover {
+    background-color: #e9ecef;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.btn {
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
-th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: center;
+.btn:hover {
+    transform: scale(1.05);
 }
 
-th {
-    background-color: #f2f2f2;
+.form-control, .form-select {
+    border-radius: 8px;
 }
 
-a {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    text-decoration: none;
-    color: #007bff;
+.stat-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-a:hover {
-    text-decoration: underline;
+.chart-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.flashes {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: 20px;
+/* Animasi Transisi */
+table tbody tr {
+    transition: background-color 0.3s ease;
 }
 
-.flashes li {
-    background-color: #ffdddd;
-    border-left: 6px solid #f44336;
-    margin-bottom: 15px;
-    padding: 10px;
+.export-buttons .btn {
+    margin-right: 5px;
+}
+
+.export-buttons form {
+    display: inline;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .navbar {
+    background-color: #1f1f1f;
+}
+
+.dark-mode .navbar .nav-link {
+    color: #e0e0e0;
+}
+
+.dark-mode .stat-card {
+    background-color: #1f1f1f;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode table {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+}
+
+.dark-mode table th {
+    background-color: #333333;
+}
+
+.dark-mode table tbody tr:hover {
+    background-color: #333333;
+}
+
+.dark-mode .alert {
+    background-color: #333333;
+    color: #e0e0e0;
 }

@@ -1,0 +1,93 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Investment Support{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <h3>Jumlah Alternatif</h3>
+            <p>{{ count_alternatives }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <h3>Rata-rata Score (V)</h3>
+            <p>{{ "%.4f"|format(avg_score) }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card text-center">
+            <h3>Upload Terakhir</h3>
+            {% if recent_uploads %}
+                <ul class="list-group">
+                    {% for upload in recent_uploads %}
+                        <li class="list-group-item">
+                            {{ upload[0] }} <br>
+                            <small>{{ upload[1] }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Tidak ada upload terbaru.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Grafik atau Visualisasi Tambahan -->
+<div class="mt-5">
+    <h2>Visualisasi Data</h2>
+    <!-- Pie Chart Distribusi Alternatif Berdasarkan Sektor -->
+    <canvas id="sectorDistributionChart" width="400" height="400"></canvas>
+</div>
+
+<!-- Tombol Navigasi -->
+<div class="mt-4 text-center">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Upload Data Baru</a>
+    <a href="{{ url_for('alternatives_list') }}" class="btn btn-success">Kelola Alternatif</a>
+    <a href="{{ url_for('latest_results') }}" class="btn btn-info">Lihat Hasil</a> <!-- Tombol Baru -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Grafik Distribusi Alternatif Berdasarkan Sektor
+    const ctx = document.getElementById('sectorDistributionChart').getContext('2d');
+    const sectorData = {{ sector_data | tojson }};
+    const sectorLabels = {{ sector_labels | tojson }};
+    const sectorDistributionChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: sectorLabels,
+            datasets: [{
+                label: 'Distribusi Alternatif',
+                data: sectorData,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+        }
+    });
+</script>
+{% endblock %}
