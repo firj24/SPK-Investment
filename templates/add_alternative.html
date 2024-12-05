@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Alternatif</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 50%;
+            margin: auto;
+            overflow: hidden;
+            padding: 30px;
+            background: #fff;
+            margin-top: 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .flashes li {
+            background-color: #ffdddd;
+            border-left: 6px solid #f44336;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tambah Alternatif Baru</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="sektor">Sektor:</label>
+            <input type="text" name="sektor" id="sektor" required>
+
+            <label for="c_to_c_growth">Laju Pertumbuhan Kumulatif (c-to-c):</label>
+            <input type="number" step="any" name="c_to_c_growth" id="c_to_c_growth" required>
+
+            <label for="q_to_q_growth">Laju Pertumbuhan Triwulanan Berantai (q-to-q):</label>
+            <input type="number" step="any" name="q_to_q_growth" id="q_to_q_growth" required>
+
+            <label for="y_on_y_growth">Laju Pertumbuhan Triwulanan terhadap Triwulan yang Sama Tahun Sebelumnya (y-on-y):</label>
+            <input type="number" step="any" name="y_on_y_growth" id="y_on_y_growth" required>
+
+            <label for="unemployment">Pengangguran:</label>
+            <input type="number" step="any" name="unemployment" id="unemployment" required>
+
+            <label for="inflation">Inflasi:</label>
+            <input type="number" step="any" name="inflasi" id="inflasi" required>
+
+            <button type="submit">Tambah Alternatif</button>
+        </form>
+        <a href="{{ url_for('alternatives_list') }}">Kembali</a>
+    </div>
+</body>
+</html>

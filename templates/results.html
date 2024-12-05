@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasil - Investment Sector Decision Support</title>
+    <!-- Tambahkan CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Styles sesuai kebutuhan */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 95%;
+            margin: auto;
+            overflow: hidden;
+            padding: 30px;
+            background: #fff;
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .button {
+            padding: 5px 10px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+
+        .button.delete {
+            background: #dc3545;
+        }
+
+        .flashes {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .flashes li {
+            background-color: #ffdddd;
+            border-left: 6px solid #f44336;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .actions a {
+            margin: 0 5px;
+        }
+
+        .export-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .export-buttons a {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background: #28a745;
+            color: #fff;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+
+        .export-buttons a:hover {
+            background: #218838;
+        }
+
+        .chart-container {
+            margin-top: 50px;
+        }
+
+        .heatmap-container {
+            margin-top: 50px;
+        }
+
+        .weights-container {
+            margin-top: 50px;
+        }
+
+        .weights-chart-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Peringkat Sektor Investasi</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for message in messages %}
+                <li>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        
+        <!-- Tabel Peringkat -->
+        <table id="alternativesTable" class="display">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Sektor</th>
+                    <th>Score (V)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                <tr>
+                    <td>{{ row.Rank }}</td>
+                    <td>{{ row.sector }}</td>
+                    <td>{{ "%.4f"|format(row.score) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Horizontal Bar Chart -->
+        <div class="row mt-5">
+            <div class="col-md-12 chart-container">
+                <h2>Peringkat Sektor Investasi Berdasarkan Score (V)</h2>
+                <canvas id="rankingChart" width="800" height="400"></canvas>
+            </div>
+        </div>
+        
+        <!-- Heatmap AHP Matrix -->
+        <div class="row mt-5">
+            <div class="col-md-12 heatmap-container">
+                <h2>Matriks Perbandingan Berpasangan AHP</h2>
+                <div id="heatmapChart"></div>
+            </div>
+        </div>
+        
+        <!-- Bagian Baru: Bobot Prioritas Kriteria -->
+        <div class="row mt-5">
+            <div class="col-md-12 weights-container">
+                <h2>Bobot Prioritas Kriteria</h2>
+                
+                <!-- Tabel Bobot Prioritas -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Kriteria</th>
+                            <th>Bobot Prioritas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crit, weight in weights.items() %}
+                        <tr>
+                            <td>{{ crit }}</td>
+                            <td>{{ "%.4f"|format(weight) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Grafik Bobot Prioritas -->
+                <div class="weights-chart-container">
+                    <h3>Visualisasi Bobot Prioritas</h3>
+                    <canvas id="weightsChart" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Akhir Bagian Baru -->
+        
+        <!-- Tombol Export dan Navigasi -->
+        <div class="export-buttons mt-5">
+            <a href="{{ url_for('export_data', export_format='csv') }}" class="btn btn-secondary">Export CSV</a>
+            <a href="{{ url_for('export_data', export_format='xlsx') }}" class="btn btn-secondary">Export Excel</a>
+            <a href="{{ url_for('export_data', export_format='json') }}" class="btn btn-secondary">Export JSON</a>
+        </div>
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('alternatives_list', filename=filename) }}" class="btn btn-success">Kelola Alternatif</a>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Kembali</a>
+        </div>
+    </div>
+    
+    <!-- Tambahkan jQuery dan DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <!-- Tambahkan Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tambahkan Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <script>
+        // Inisialisasi DataTables
+        $(document).ready( function () {
+            $('#alternativesTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "order": [[ 0, "asc" ]]
+            });
+        } );
+    </script>
+    
+    <script>
+        // Horizontal Bar Chart dengan Chart.js
+        const ctx = document.getElementById('rankingChart').getContext('2d');
+        const data = {
+            labels: {{ results | map(attribute='sector') | list | tojson }},
+            datasets: [{
+                label: 'Score (V)',
+                data: {{ results | map(attribute='score') | list | tojson }},
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 1
+            }]
+        };
+        const rankingChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Score (V): ' + context.parsed.x.toFixed(4);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <script>
+        // Heatmap AHP Matrix dengan Plotly
+        const heatmapJSON = {{ heatmapJSON | safe }};
+        Plotly.newPlot('heatmapChart', heatmapJSON.data, heatmapJSON.layout);
+    </script>
+    
+    <script>
+        // Grafik Bobot Prioritas Kriteria dengan Chart.js
+        const ctxWeights = document.getElementById('weightsChart').getContext('2d');
+        const weightsData = {
+            labels: {{ weights.keys() | list | tojson }},
+            datasets: [{
+                label: 'Bobot Prioritas',
+                data: {{ weights.values() | list | tojson }},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        const weightsChart = new Chart(ctxWeights, {
+            type: 'pie',
+            data: weightsData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed.toFixed(4);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
